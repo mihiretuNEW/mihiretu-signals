@@ -204,6 +204,8 @@ function BottomChartComponent({ data, activeIndicators, settings, zoomLevel, scr
       let gtaSellArrow = gtaData?.[i]?.sellArrow;
       
       let ribbonColor = scalpingData?.[i]?.ribbonColor;
+      let ribbonBuyArrow = scalpingData?.[i]?.ribbonBuyArrow ?? null;
+      let ribbonSellArrow = scalpingData?.[i]?.ribbonSellArrow ?? null;
       
       let execSL = null;
       let execTP = null;
@@ -298,6 +300,9 @@ function BottomChartComponent({ data, activeIndicators, settings, zoomLevel, scr
         gtaSellArrow,
         waeBuyArrow,
         waeSellArrow,
+        ribbonColor,
+        ribbonBuyArrow,
+        ribbonSellArrow,
         tlUpper: trendlinesBreakData?.[i]?.upper ?? null,
         tlLower: trendlinesBreakData?.[i]?.lower ?? null,
         csoBuySignal,
@@ -333,6 +338,7 @@ function BottomChartComponent({ data, activeIndicators, settings, zoomLevel, scr
          nwenvBase: null, nwenvUpper: null, nwenvLower: null, nwenvBuyArrow: null, nwenvSellArrow: null,
          waeBuyArrow: null, waeSellArrow: null,
          execSL: null, execTP: null, gtaColor: null, gtaBuyArrow: null, gtaSellArrow: null,
+         ribbonColor: null, ribbonBuyArrow: null, ribbonSellArrow: null,
          tlUpper: null, tlLower: null,
          csoBuySignal: null, csoSellSignal: null
        } as any;
@@ -635,6 +641,13 @@ function BottomChartComponent({ data, activeIndicators, settings, zoomLevel, scr
               <>
                 <Line yAxisId="main" type="stepAfter" dataKey="execSL" stroke="#ef4444" strokeWidth={2} strokeDasharray="3 3" dot={false} connectNulls={false} isAnimationActive={false} name="Stop Loss" />
                 <Line yAxisId="main" type="stepAfter" dataKey="execTP" stroke="#22c55e" strokeWidth={2} strokeDasharray="3 3" dot={false} connectNulls={false} isAnimationActive={false} name="Take Profit" />
+              </>
+          )}
+
+          {activeIndicators.SCALPING && (
+              <>
+              <Scatter yAxisId="main" dataKey="ribbonBuyArrow" shape={(props: any) => props.payload.ribbonBuyArrow === null ? null : <text x={props.cx} y={props.cy} fill="#10b981" fontSize={16} fontWeight="bold" textAnchor="middle" alignmentBaseline="text-before-edge">▲</text>} isAnimationActive={false} />
+              <Scatter yAxisId="main" dataKey="ribbonSellArrow" shape={(props: any) => props.payload.ribbonSellArrow === null ? null : <text x={props.cx} y={props.cy} fill="#ef4444" fontSize={16} fontWeight="bold" textAnchor="middle" alignmentBaseline="text-after-edge">▼</text>} isAnimationActive={false} />
               </>
           )}
 
