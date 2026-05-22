@@ -59,10 +59,13 @@ export function calculateGTATrend(data: CandleData[], longPeriod = 21, midPeriod
 
 export interface SimpleScalpingResult {
   ribbonColor: 'green' | 'red';
+  ribbonBuyArrow: number | null;
+  ribbonSellArrow: number | null;
 }
 
 export function calculateSimpleScalping(data: CandleData[], lookback = 6, emaInput = 4, lookbackHl = 2): SimpleScalpingResult[] {
   const results: SimpleScalpingResult[] = [];
+  if (!data || data.length === 0) return results;
   const closes = data.map(d => d.close);
   const myEma = calculateEMA(closes, emaInput);
   
@@ -71,13 +74,30 @@ export function calculateSimpleScalping(data: CandleData[], lookback = 6, emaInp
   // Assuming a smoothed median based on lookback.
   const mySma = calculateSMA(closes, lookback);
   
+  let prevColor: 'green' | 'red' | null = null;
+
   for (let i = 0; i < data.length; i++) {
     if (isNaN(myEma[i]) || isNaN(mySma[i])) {
-      results.push({ ribbonColor: 'green' }); // Default
+      results.push({ ribbonColor: 'green', ribbonBuyArrow: null, ribbonSellArrow: null }); // Default
       continue;
     }
     const color = myEma[i] > mySma[i] ? 'green' : 'red';
-    results.push({ ribbonColor: color });
+    
+    let ribbonBuyArrow: number | null = null;
+    let ribbonSellArrow: number | null = null;
+    
+    if (prevColor !== null && prevColor !== color) {
+        // Gap gap away from candle
+        const gap = Math.max(data[i].high - data[i].low, data[i].close * 0.0005) * 0.2;
+        if (color === 'green') {
+            ribbonBuyArrow = data[i].low - gap;
+        } else {
+            ribbonSellArrow = data[i].high + gap;
+        }
+    }
+    
+    prevColor = color;
+    results.push({ ribbonColor: color, ribbonBuyArrow, ribbonSellArrow });
   }
   return results;
 }
