@@ -139,6 +139,7 @@ export function TopBar({
                      ind === 'OB' ? 'Order Block Detector' :
                      ind === 'GTA' ? 'GTA Trend Filter' :
                      ind === 'SCALPING' ? 'Simple Scalping Ribbon' :
+                     ind === 'SNR' ? 'Support & Resistance' :
                      ind === 'TRENDLINES_BREAKS' ? 'Trendlines with Breaks' :
                      ind === 'PSAR' ? 'Parabolic SAR' : ind}
                   </span>
@@ -234,6 +235,13 @@ function SettingsModal({ settings, setSettings, onClose }: any) {
                     <label className="text-xs text-neutral-400 flex justify-between items-center">R Smooth <input type="number" value={settings.STDSMI_R} onChange={e => update('STDSMI_R', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
                     <label className="text-xs text-neutral-400 flex justify-between items-center">S Smooth <input type="number" value={settings.STDSMI_S} onChange={e => update('STDSMI_S', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
                     <label className="text-xs text-neutral-400 flex justify-between items-center">Signal Period <input type="number" value={settings.STDSMI_SIGNAL} onChange={e => update('STDSMI_SIGNAL', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
+                  </div>
+                </div>
+
+                <div className="space-y-2 border border-neutral-800 p-3 rounded bg-neutral-900/50">
+                  <h4 className="text-sm font-medium text-[#f97316]">Support & Resistance</h4>
+                  <div className="grid grid-cols-1 gap-2">
+                    <span className="text-xs text-neutral-500 italic">Dynamically scales to viewport</span>
                   </div>
                 </div>
 
