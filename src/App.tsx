@@ -110,6 +110,7 @@ export default function App() {
     WAE: true,
     CSO: true,
     OB: true,
+    SNR: true,
     TRENDLINES_BREAKS: true
   };
 
