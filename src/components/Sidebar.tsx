@@ -1,6 +1,7 @@
 import { ASSET_PAIRS } from '../lib/derivConfig';
 import { cn } from '../lib/utils';
 import { ChevronLeft, BarChart3 } from 'lucide-react';
+import { DisciplineTracker } from './DisciplineTracker';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -46,6 +47,7 @@ export function Sidebar({ isOpen, setIsOpen, selected, onSelect }: SidebarProps)
           </div>
         ))}
       </div>
+      <DisciplineTracker />
     </div>
   );
 }
