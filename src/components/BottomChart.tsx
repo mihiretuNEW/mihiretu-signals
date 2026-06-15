@@ -561,10 +561,10 @@ function BottomChartComponent({ data, activeIndicators, settings, zoomLevel, scr
               key={`snr-${idx}`} 
               yAxisId="main" 
               y={level.price} 
-              stroke={level.type === 'resistance' ? '#ef4444' : level.type === 'support' ? '#06b6d4' : '#8b5cf6'} 
-              strokeWidth={1.5} 
-              opacity={0.8}
-              label={{ position: 'right', value: level.type.toUpperCase(), fill: level.type === 'resistance' ? '#ef4444' : level.type === 'support' ? '#06b6d4' : '#8b5cf6', fontSize: 10, offset: 5, fontWeight: 'bold' }} 
+              stroke="#ffffff" 
+              strokeWidth={3} 
+              opacity={1}
+              label={{ position: 'right', value: level.type.toUpperCase(), fill: '#ffffff', fontSize: 10, offset: 5, fontWeight: 'bold' }} 
             />
           ))}
 
