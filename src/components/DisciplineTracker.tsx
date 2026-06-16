@@ -5,29 +5,55 @@ import { cn } from '../lib/utils';
 export function DisciplineTracker() {
   const [wins, setWins] = useState(0);
   const [losses, setLosses] = useState(0);
+  const [isBusted, setIsBusted] = useState(false);
 
   useEffect(() => {
-    // Check local storage and reset if it's a new day
-    const checkDate = () => {
+    // Check local storage and reset if it's a new day or lock expired
+    const checkState = () => {
+      const now = Date.now();
+      const storedLockTime = localStorage.getItem('disciplineLockTime');
+
+      if (storedLockTime) {
+        const lockValue = parseInt(storedLockTime, 10);
+        // Check if 6 hours (6 * 60 * 60 * 1000 ms) have passed
+        if (now - lockValue >= 6 * 60 * 60 * 1000) {
+          localStorage.removeItem('disciplineLockTime');
+          localStorage.setItem('disciplineLosses', '0');
+          // Reset losses to 0 after 6 hours to unlock
+          setLosses(0);
+          setIsBusted(false);
+        } else {
+          setIsBusted(true);
+        }
+      } else {
+        setIsBusted(false);
+      }
+
       const today = new Date().toLocaleDateString();
       const storedDate = localStorage.getItem('disciplineDate');
       
       if (storedDate !== today) {
         localStorage.setItem('disciplineDate', today);
-        localStorage.setItem('disciplineWins', '0');
-        localStorage.setItem('disciplineLosses', '0');
-        setWins(0);
-        setLosses(0);
+        // Only reset daily stats if we are not currently locked out
+        if (!localStorage.getItem('disciplineLockTime')) {
+          localStorage.setItem('disciplineWins', '0');
+          localStorage.setItem('disciplineLosses', '0');
+          setWins(0);
+          setLosses(0);
+        } else {
+          setWins(Number(localStorage.getItem('disciplineWins')) || 0);
+          setLosses(Number(localStorage.getItem('disciplineLosses')) || 0);
+        }
       } else {
         setWins(Number(localStorage.getItem('disciplineWins')) || 0);
         setLosses(Number(localStorage.getItem('disciplineLosses')) || 0);
       }
     };
 
-    checkDate();
+    checkState();
     
-    // Check periodically in case page is left open overnight
-    const interval = setInterval(checkDate, 60000); // Check every minute
+    // Check periodically in case page is left open
+    const interval = setInterval(checkState, 10000); // Check every 10 seconds for faster unlock detection
     return () => clearInterval(interval);
   }, []);
 
@@ -41,9 +67,13 @@ export function DisciplineTracker() {
     const newLosses = losses + 1;
     setLosses(newLosses);
     localStorage.setItem('disciplineLosses', newLosses.toString());
+    
+    if (newLosses >= 2) {
+      const now = Date.now();
+      localStorage.setItem('disciplineLockTime', now.toString());
+      setIsBusted(true);
+    }
   };
-
-  const isBusted = losses >= 2;
 
   // Render the component
   return (
