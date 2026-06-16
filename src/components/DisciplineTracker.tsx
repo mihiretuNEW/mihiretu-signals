@@ -11,42 +11,50 @@ export function DisciplineTracker() {
     // Check local storage and reset if it's a new day or lock expired
     const checkState = () => {
       const now = Date.now();
+      const THREE_HOURS = 3 * 60 * 60 * 1000;
       const storedLockTime = localStorage.getItem('disciplineLockTime');
+
+      let lockedOut = false;
 
       if (storedLockTime) {
         const lockValue = parseInt(storedLockTime, 10);
-        // Check if 6 hours (6 * 60 * 60 * 1000 ms) have passed
-        if (now - lockValue >= 6 * 60 * 60 * 1000) {
+        // Check if 3 hours have passed
+        if (now - lockValue >= THREE_HOURS) {
           localStorage.removeItem('disciplineLockTime');
           localStorage.setItem('disciplineLosses', '0');
-          // Reset losses to 0 after 6 hours to unlock
+          // Reset losses to 0 after 3 hours to unlock
           setLosses(0);
           setIsBusted(false);
+          // And optionally reset session start time here so that stats refresh now too
+          localStorage.setItem('disciplineStartTime', now.toString());
         } else {
           setIsBusted(true);
+          lockedOut = true;
         }
       } else {
         setIsBusted(false);
       }
 
-      const today = new Date().toLocaleDateString();
-      const storedDate = localStorage.getItem('disciplineDate');
-      
-      if (storedDate !== today) {
-        localStorage.setItem('disciplineDate', today);
-        // Only reset daily stats if we are not currently locked out
-        if (!localStorage.getItem('disciplineLockTime')) {
-          localStorage.setItem('disciplineWins', '0');
-          localStorage.setItem('disciplineLosses', '0');
-          setWins(0);
-          setLosses(0);
-        } else {
+      if (!lockedOut) {
+        const storedStartTime = localStorage.getItem('disciplineStartTime');
+        if (!storedStartTime) {
+          localStorage.setItem('disciplineStartTime', now.toString());
+          // Assuming existing values might be from before, load them:
           setWins(Number(localStorage.getItem('disciplineWins')) || 0);
           setLosses(Number(localStorage.getItem('disciplineLosses')) || 0);
+        } else {
+          const startTimeValue = parseInt(storedStartTime, 10);
+          if (now - startTimeValue >= THREE_HOURS) {
+            localStorage.setItem('disciplineStartTime', now.toString());
+            localStorage.setItem('disciplineWins', '0');
+            localStorage.setItem('disciplineLosses', '0');
+            setWins(0);
+            setLosses(0);
+          } else {
+            setWins(Number(localStorage.getItem('disciplineWins')) || 0);
+            setLosses(Number(localStorage.getItem('disciplineLosses')) || 0);
+          }
         }
-      } else {
-        setWins(Number(localStorage.getItem('disciplineWins')) || 0);
-        setLosses(Number(localStorage.getItem('disciplineLosses')) || 0);
       }
     };
 
