@@ -182,6 +182,7 @@ export function TopBar({
                      ind === 'UTBOT' ? 'UT Bot Alerts' :
                      ind === 'NWENV' ? 'Nadaraya-Watson Envelope' :
                      ind === 'WAE' ? 'Waddah Attar Explosion' :
+                     ind === 'VELOCITY' ? 'Velocity Confirmation Hist' :
                      ind === 'CSO' ? 'Correlated Sine Oscillator' :
                      ind === 'OB' ? 'Order Block Detector' :
                      ind === 'GTA' ? 'GTA Trend Filter' :
@@ -398,6 +399,15 @@ function SettingsModal({ settings, setSettings, onClose }: any) {
                     <label className="text-xs text-neutral-400 flex justify-between items-center">Slow EMA <input type="number" value={settings.WAE_SLOW} onChange={e => update('WAE_SLOW', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
                     <label className="text-xs text-neutral-400 flex justify-between items-center">Channel <input type="number" value={settings.WAE_CHANNEL} onChange={e => update('WAE_CHANNEL', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
                     <label className="text-xs text-neutral-400 flex justify-between items-center">Multiplier <input type="number" step="0.1" value={settings.WAE_MULT} onChange={e => update('WAE_MULT', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
+                  </div>
+                </div>
+
+                <div className="space-y-2 border border-neutral-800 p-3 rounded bg-neutral-900/50">
+                  <h4 className="text-sm font-medium text-[#10b981]">Velocity Hist</h4>
+                  <div className="grid grid-cols-1 gap-2">
+                    <label className="text-xs text-neutral-400 flex justify-between items-center">Momentum Ln <input type="number" value={settings.VELOCITY_MOM || 7} onChange={e => update('VELOCITY_MOM', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
+                    <label className="text-xs text-neutral-400 flex justify-between items-center">Smoothing <input type="number" value={settings.VELOCITY_SMOOTH || 4} onChange={e => update('VELOCITY_SMOOTH', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
+                    <label className="text-xs text-neutral-400 flex justify-between items-center">ATR Filter <input type="number" value={settings.VELOCITY_ATR || 10} onChange={e => update('VELOCITY_ATR', e.target.value)} className="w-16 bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-right text-white" /></label>
                   </div>
                 </div>
 
