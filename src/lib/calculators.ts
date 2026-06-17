@@ -1183,3 +1183,42 @@ export function calculateCorrelatedSineOscillator(
 
   return results;
 }
+
+export function calculateVelocity(data: CandleData[], momLength = 7, smoothLength = 4, atrLength = 10) {
+  const normHistogram: (number | null)[] = new Array(data.length).fill(null);
+  const histColor: (number | null)[] = new Array(data.length).fill(null); 
+
+  const closePrices = data.map((d: CandleData) => d.close);
+  const atrValues = calculateATR(data, atrLength);
+  
+  const rawMom = new Array(data.length).fill(0);
+  for (let i = 0; i < data.length; i++) {
+    if (i >= momLength) {
+      rawMom[i] = closePrices[i] - closePrices[i - momLength];
+    }
+  }
+
+  const smoothedMom = calculateEMA(rawMom, smoothLength);
+  
+  for (let i = 0; i < data.length; i++) {
+    const atrValue = atrValues[i];
+    if (atrValue && atrValue > 0 && smoothedMom[i] !== null) {
+      normHistogram[i] = (smoothedMom[i]! / atrValue) * 10;
+    } else {
+      normHistogram[i] = 0;
+    }
+    
+    // Color logic
+    if (i > 0 && normHistogram[i] !== null && normHistogram[i - 1] !== null) {
+      if (normHistogram[i]! > 0) {
+        histColor[i] = normHistogram[i]! > normHistogram[i - 1]! ? 1 : 2; // 1 = Green, 2 = Teal
+      } else {
+        histColor[i] = normHistogram[i]! < normHistogram[i - 1]! ? -1 : -2; // -1 = Red, -2 = Maroon
+      }
+    } else if (normHistogram[i] !== null) {
+      histColor[i] = normHistogram[i]! > 0 ? 1 : -1;
+    }
+  }
+
+  return { normHistogram, histColor };
+}
